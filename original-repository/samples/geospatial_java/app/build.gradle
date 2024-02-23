@@ -15,6 +15,10 @@
  */
 apply plugin: 'com.android.application'
 
+// -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+// -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
+
 android {
     compileSdkVersion 34
     defaultConfig {
@@ -38,7 +42,27 @@ android {
         }
     }
     namespace 'com.google.ar.core.examples.java.geospatial'
+// -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+    buildFeatures {
+        viewBinding true
+    }
 }
+
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+}
+// -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
 
 dependencies {
     // ARCore (Google Play Services for AR) library.
@@ -54,4 +78,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.concurrent:concurrent-futures:1.1.0'
     implementation 'com.google.guava:guava:31.1-android'
+// -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+// -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
 }
