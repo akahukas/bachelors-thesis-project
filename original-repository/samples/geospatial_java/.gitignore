@@ -8,6 +8,7 @@ build/
 
 # User configuration.
 local.properties
+local.defaults.properties
 
 # Secrets
 secrets.properties
