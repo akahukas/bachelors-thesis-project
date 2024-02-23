@@ -9,6 +9,9 @@ build/
 # User configuration.
 local.properties
 
+# Secrets
+secrets.properties
+
 # OS configurations.
 .DS_Store
 
