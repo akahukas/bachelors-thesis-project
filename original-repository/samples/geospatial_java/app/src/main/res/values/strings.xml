@@ -62,5 +62,7 @@
 
     <string name="title_activity_maps">Geospatial Coordinates on Map</string>
 
+    <string name="switch_to_map_button">Switch to Map View</string>
+
     <!--                    ADDED BY SAKU HAKAMÄKI |  END                     -->
 </resources>

@@ -17,6 +17,7 @@
 package com.google.ar.core.examples.java.geospatial;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.opengl.GLSurfaceView;
@@ -97,6 +98,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import fi.akahukas.projects.geospatial_maps.maps.MapsActivity;
 
 /**
  * Main activity for the Geospatial API example.
@@ -253,6 +256,12 @@ public class GeospatialActivity extends AppCompatActivity
   // A set of planes representing building outlines and floors.
   private final Map<StreetscapeGeometry, Mesh> streetscapeGeometryToMeshes = new HashMap<>();
 
+  // -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+
+  private Button toMapViewButton;
+
+  // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -316,6 +325,17 @@ public class GeospatialActivity extends AppCompatActivity
             });
     surfaceView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(/* context= */ this);
+
+    // -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+
+    toMapViewButton = findViewById(R.id.to_map_view_button);
+
+    toMapViewButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) { switchToMapView(); }
+    });
+
+    // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
   }
 
   @Override
@@ -1359,5 +1379,18 @@ public class GeospatialActivity extends AppCompatActivity
     }
     return false;
   }
+
+  // -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+
+  /**
+   * Switches to the Google Maps activity.
+   */
+  private void switchToMapView() {
+    Intent intent = new Intent(this, MapsActivity.class);
+
+    startActivity(intent);
+  }
+
+  // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
 
 }

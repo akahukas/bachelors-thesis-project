@@ -45,6 +45,19 @@
       android:textColor="#ffffff"
       android:background="#bf323232"/>
 
+
+  <!--                    ADDED BY SAKU HAKAMÄKI | START                    -->
+
+  <Button
+      android:id="@+id/to_map_view_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignTop="@id/set_anchor_button"
+      android:layout_marginStart="10dp"
+      android:text="@string/switch_to_map_button" />
+
+  <!--                    ADDED BY SAKU HAKAMÄKI |  END                     -->
+
   <TextView
       android:id="@+id/tap_screen_text_view"
       android:layout_width="wrap_content"
