@@ -1494,10 +1494,11 @@ public class GeospatialActivity extends AppCompatActivity
   }
 
   /**
-   * TODO: ADD COMNMENTS
+   * Sets the text and text color of the element showing
+   * whether the app is recording location data or not.
    *
-   * @param textId
-   * @param colorId
+   * @param textId The integer identifier of the string value.
+   * @param colorId The integer identifier of the color value.
    */
   private void setRecordingStatusTextViewStyle(int textId, int colorId) {
     if (recordingStatusTextView != null) {
@@ -1509,7 +1510,9 @@ public class GeospatialActivity extends AppCompatActivity
   }
 
   /**
-   * TODO: ADD COMMENTS
+   * Updates the information about the current recording mode
+   * and the size of the sets containing the collected location
+   * data.
    */
   private void updateRecordingInfoTextView() {
     CollectingMode mode = locationDataCollector.getCurrentCollectingMode().getValue();
@@ -1531,10 +1534,11 @@ public class GeospatialActivity extends AppCompatActivity
   }
 
   /**
-   * TODO: ADD COMMENTS
+   * Handles the click event emitted from the recording menu.
    *
-   * @param item
-   * @return
+   * @param item The menu item which emitted the event.
+   * @return True if the event was handled successfully,
+   *          False if not.
    */
   protected boolean recordingMenuClick(MenuItem item) {
     int itemId = item.getItemId();
