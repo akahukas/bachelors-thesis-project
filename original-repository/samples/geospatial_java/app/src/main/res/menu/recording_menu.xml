@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--            THIS FILE WAS CREATED BY SAKU HAKAMÄKI            -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/recordingMode"
+        android:title="@string/menu_mode"
+        android:titleCondensed="@string/menu_mode_condensed">
+        <menu>
+            <item
+                android:id="@+id/recordingModeSingle"
+                android:title="@string/menu_mode_single"/>
+
+            <item
+                android:id="@+id/recordingModeContinuous"
+                android:title="@string/menu_mode_continuous"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/manageSets"
+        android:title="@string/menu_sets_manage"
+        android:titleCondensed="@string/menu_sets_manage_condensed">
+        <menu>
+            <item
+                android:id="@+id/saveCurrentSet"
+                android:title="@string/menu_sets_save_current"/>
+
+            <item
+                android:id="@+id/createNewSet"
+                android:title="@string/menu_sets_create_new"/>
+
+            <item
+                android:id="@+id/clearSet"
+                android:title="@string/menu_sets_clear">
+                <menu>
+                    <item
+                        android:id="@+id/clearCurrentSet"
+                        android:title="@string/menu_sets_clear_current"/>
+
+                    <item
+                        android:id="@+id/clearAllSets"
+                        android:title="@string/menu_sets_clear_all"/>
+                </menu>
+            </item>
+        </menu>
+    </item>
+</menu>

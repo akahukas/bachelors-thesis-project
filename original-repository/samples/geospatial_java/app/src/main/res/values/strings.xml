@@ -64,5 +64,27 @@
 
     <string name="switch_to_map_button">Switch to Map View</string>
 
+    <string name="recording_menu_button">MENU</string>
+
+    <string name="menu_mode">Recording Mode</string>
+    <string name="menu_mode_condensed">Mode</string>
+    <string name="menu_mode_single">Single</string>
+    <string name="menu_mode_continuous">Continuous</string>
+    <string name="menu_sets_manage">Manage Sets</string>
+    <string name="menu_sets_manage_condensed">Sets</string>
+    <string name="menu_sets_save_current">Save Current</string>
+    <string name="menu_sets_create_new">New Set</string>
+    <string name="menu_sets_clear">Clear</string>
+    <string name="menu_sets_clear_current">Current</string>
+    <string name="menu_sets_clear_all">All</string>
+
+
+    <string name="record_button">RECORD</string>
+
+    <string name="recording_on">RECORDING</string>
+    <string name="recording_off">NOT RECORDING</string>
+
+    <string name="recording_info">RECORDING MODE: %s\n%d IN CURRENT SET\n%d SAVED SETS IN TOTAL</string>
+
     <!--                    ADDED BY SAKU HAKAMÄKI |  END                     -->
 </resources>

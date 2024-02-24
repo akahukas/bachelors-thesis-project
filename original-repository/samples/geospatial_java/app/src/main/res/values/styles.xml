@@ -53,4 +53,11 @@
     <item name="android:paddingLeft">@dimen/dialog_btn_padding</item>
     <item name="android:paddingRight">@dimen/dialog_btn_padding</item>
   </style>
+
+  <!--                    ADDED BY SAKU HAKAMÄKI | START                    -->
+
+  <color name="recording_text_red">@android:color/holo_red_dark</color>
+  <color name="recording_text_white">@android:color/white</color>
+
+  <!--                    ADDED BY SAKU HAKAMÄKI |  END                     -->
 </resources>

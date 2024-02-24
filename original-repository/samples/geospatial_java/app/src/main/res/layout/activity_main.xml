@@ -49,6 +49,52 @@
   <!--                    ADDED BY SAKU HAKAMÄKI | START                    -->
 
   <Button
+      android:id="@+id/recording_menu_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_marginTop="5dp"
+      android:layout_marginEnd="10dp"
+      android:text="@string/recording_menu_button"
+      android:textColor="#ffffff" />
+
+  <Button
+      android:id="@+id/record_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_below="@+id/recording_menu_button"
+      android:layout_marginTop="5dp"
+      android:layout_marginEnd="10dp"
+      android:text="@string/record_button"
+      android:textColor="#ffffff"/>
+
+  <TextView
+      android:id="@+id/recording_status_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_above="@+id/recording_info_text_view"
+      android:layout_marginEnd="10dp"
+      android:layout_marginTop="5dp"
+      android:layout_marginBottom="5dp"
+      android:text="@string/recording_off"
+      android:textColor="#ffffff"/>
+
+  <TextView
+      android:id="@+id/recording_info_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_below="@+id/geospatial_pose_view"
+      android:layout_marginStart="10dp"
+      android:layout_marginTop="5dp"
+      android:text="@string/recording_info"
+      android:padding="5dp"
+      android:textColor="#ffffff"
+      android:background="#bf323232" />
+
+  <Button
       android:id="@+id/to_map_view_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

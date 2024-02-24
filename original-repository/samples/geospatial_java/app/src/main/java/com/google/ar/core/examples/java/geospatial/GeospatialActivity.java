@@ -23,6 +23,7 @@ import android.location.Location;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.GuardedBy;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -90,6 +92,7 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import com.google.ar.core.exceptions.UnsupportedConfigurationException;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -99,6 +102,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import fi.akahukas.projects.geospatial_maps.common.ObservableEnum;
+import fi.akahukas.projects.geospatial_maps.common.ObservableInt;
+import fi.akahukas.projects.geospatial_maps.location_data.CollectingMode;
+import fi.akahukas.projects.geospatial_maps.location_data.LocationDataCollector;
 import fi.akahukas.projects.geospatial_maps.maps.MapsActivity;
 
 /**
@@ -259,6 +266,18 @@ public class GeospatialActivity extends AppCompatActivity
   // -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
 
   private Button toMapViewButton;
+  private Button recordingMenuButton;
+  private Button recordButton;
+
+  private TextView recordingStatusTextView;
+  private TextView recordingInfoTextView;
+
+  private LocalTime currentTime;
+
+  private LocationDataCollector locationDataCollector;
+
+  private final int SINGLE_SAMPLE_COUNTDOWN_DURATION = 2000; // milliseconds
+  private final int SINGLE_SAMPLE_COUNTDOWN_INTERVAL = 1000; // milliseconds
 
   // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
 
@@ -333,6 +352,81 @@ public class GeospatialActivity extends AppCompatActivity
     toMapViewButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) { switchToMapView(); }
+    });
+
+    locationDataCollector = new LocationDataCollector();
+
+    recordButton = findViewById(R.id.record_button);
+    recordingStatusTextView = findViewById(R.id.recording_status_text_view);
+
+    recordButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        CollectingMode mode = locationDataCollector.getCurrentCollectingMode().getValue();
+
+        if (mode == CollectingMode.CONTINUOUS) {
+          if (locationDataCollector.isCollecting()) {
+            locationDataCollector.stopCollecting();
+
+            setRecordingStatusTextViewStyle(R.string.recording_off, R.color.recording_text_white);
+          } else {
+            locationDataCollector.startCollecting();
+
+            setRecordingStatusTextViewStyle(R.string.recording_on, R.color.recording_text_red);
+          }
+
+        } else if (mode == CollectingMode.SINGLE) {
+          locationDataCollector.startCollecting();
+
+          setRecordingStatusTextViewStyle(R.string.recording_on, R.color.recording_text_red);
+
+          new CountDownTimer(SINGLE_SAMPLE_COUNTDOWN_DURATION, SINGLE_SAMPLE_COUNTDOWN_INTERVAL) {
+
+            @Override
+            public void onTick(long l) {
+              // A stub implementation to silence warning.
+            }
+
+            @Override
+            public void onFinish() {
+              setRecordingStatusTextViewStyle(R.string.recording_off, R.color.recording_text_white);
+            }
+          }.start();
+        }
+      }
+    });
+
+    recordingInfoTextView = findViewById(R.id.recording_info_text_view);
+
+    ObservableInt currentSetSize = locationDataCollector.getCurrentSetSize();
+    ObservableInt totalSetsSize = locationDataCollector.getTotalSetsSize();
+    ObservableEnum<CollectingMode> currentCollectingMode = locationDataCollector.getCurrentCollectingMode();
+
+    currentSetSize.addOnValueChangedListener(newValue -> {
+      updateRecordingInfoTextView();
+    });
+
+    totalSetsSize.addOnValueChangedListener(newValue -> {
+      updateRecordingInfoTextView();
+    });
+
+    currentCollectingMode.addOnValueChangedListener(newValue -> {
+      updateRecordingInfoTextView();
+    });
+
+    // Initialize the TextView
+    updateRecordingInfoTextView();
+
+    recordingMenuButton = findViewById(R.id.recording_menu_button);
+
+    recordingMenuButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        PopupMenu popupMenu = new PopupMenu(GeospatialActivity.this, view);
+        popupMenu.setOnMenuItemClickListener(GeospatialActivity.this::recordingMenuClick);
+        popupMenu.inflate(R.menu.recording_menu);
+        popupMenu.show();
+      }
     });
 
     // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
@@ -1053,6 +1147,14 @@ public class GeospatialActivity extends AppCompatActivity
         () -> {
           geospatialPoseTextView.setText(poseText);
         });
+
+    // -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
+
+    currentTime = LocalTime.now();
+
+    locationDataCollector.updateCurrentGeospatialPose(geospatialPose, currentTime);
+
+    // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
   }
 
   // Return the scale in range [1, 2] after mapping a distance between camera and anchor to [2, 20].
@@ -1389,6 +1491,92 @@ public class GeospatialActivity extends AppCompatActivity
     Intent intent = new Intent(this, MapsActivity.class);
 
     startActivity(intent);
+  }
+
+  /**
+   * TODO: ADD COMNMENTS
+   *
+   * @param textId
+   * @param colorId
+   */
+  private void setRecordingStatusTextViewStyle(int textId, int colorId) {
+    if (recordingStatusTextView != null) {
+      recordingStatusTextView.setText(textId);
+      recordingStatusTextView.setTextColor(ContextCompat.getColor(
+              GeospatialActivity.this, colorId
+      ));
+    }
+  }
+
+  /**
+   * TODO: ADD COMMENTS
+   */
+  private void updateRecordingInfoTextView() {
+    CollectingMode mode = locationDataCollector.getCurrentCollectingMode().getValue();
+    int currentSetSize = locationDataCollector.getCurrentSetSize().getValue();
+    int totalSetsSize = locationDataCollector.getTotalSetsSize().getValue();
+
+    String infoText = getResources().getString(
+            R.string.recording_info,
+            mode,
+            currentSetSize,
+            totalSetsSize
+    );
+
+    runOnUiThread(
+        () -> {
+          recordingInfoTextView.setText(infoText);
+        }
+    );
+  }
+
+  /**
+   * TODO: ADD COMMENTS
+   *
+   * @param item
+   * @return
+   */
+  protected boolean recordingMenuClick(MenuItem item) {
+    int itemId = item.getItemId();
+    if (itemId == R.id.recordingModeSingle) {
+
+      if (locationDataCollector.isCollecting()) {
+        setRecordingStatusTextViewStyle(R.string.recording_off, R.color.recording_text_white);
+      }
+
+      locationDataCollector.changeCurrentCollectingMode(
+              CollectingMode.SINGLE
+      );
+      return true;
+    }
+    else if (itemId == R.id.recordingModeContinuous) {
+
+      if (locationDataCollector.isCollecting()) {
+        setRecordingStatusTextViewStyle(R.string.recording_off, R.color.recording_text_white);
+      }
+
+      locationDataCollector.changeCurrentCollectingMode(
+              CollectingMode.CONTINUOUS
+      );
+      return true;
+    }
+    else if (itemId == R.id.saveCurrentSet) {
+      locationDataCollector.saveCurrentSet();
+      return true;
+    }
+    else if (itemId == R.id.createNewSet) {
+      locationDataCollector.addNewDataSampleSet();
+      return true;
+    }
+    else if (itemId == R.id.clearCurrentSet) {
+      locationDataCollector.clearCurrentDataSampleSet();
+      return true;
+    }
+    else if (itemId == R.id.clearAllSets) {
+      locationDataCollector.clearAllDataSampleSets();
+      return true;
+    }
+    return false;
   }
 
   // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
