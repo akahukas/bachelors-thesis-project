@@ -59,5 +59,7 @@
   <color name="recording_text_red">@android:color/holo_red_dark</color>
   <color name="recording_text_white">@android:color/white</color>
 
+  <color name="map_toolbar_background">#bf323232</color>
+
   <!--                    ADDED BY SAKU HAKAMÄKI |  END                     -->
 </resources>

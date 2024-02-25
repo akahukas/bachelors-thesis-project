@@ -49,8 +49,10 @@
 
         <activity
             android:name="fi.akahukas.projects.geospatial_maps.maps.MapsActivity"
+            android:parentActivityName=".GeospatialActivity"
             android:exported="false"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
             android:name=".GeospatialActivity"
             android:configChanges="orientation|screenSize"
