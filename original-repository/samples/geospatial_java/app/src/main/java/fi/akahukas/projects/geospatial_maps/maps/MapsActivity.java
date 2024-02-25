@@ -54,6 +54,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
+     * Called when another activity comes into the foreground.
+     * Clears the different sets related to the LocationDataSamples.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        clearSets();
+    }
+
+    /**
+     * Called when this activity is no longer visible.
+     * Clears the different sets related to the LocationDataSamples.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        clearSets();
+    }
+
+    /**
+     * Called when this activity is finishing or being destroyed
+     * by the system.
+     * Clears the different sets related to the LocationDataSamples.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        clearSets();
+    }
+
+    /**
+     * Clears the set containing the LocationDataSamples, as well
+     * as the set of Marker and Polyline objects used to plot the
+     * location data.
+     */
+    private void clearSets() {
+        if (locationDataSampleSets != null) {
+            locationDataSampleSets.clear();
+            locationMarkerSets.clear();
+            locationPolylineSets.clear();
+        }
+    }
+
+    /**
      * Checks whether the sent extras are valid or not.
      * If valid, assigns extras to corresponding attributes.
      *
