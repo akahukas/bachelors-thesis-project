@@ -60,7 +60,14 @@
 
     <!--                    ADDED BY SAKU HAKAMÄKI | START                    -->
 
-    <string name="title_activity_maps">Geospatial Coordinates on Map</string>
+    <string name="title_activity_maps">Geospatial Coordinates</string>
+
+    <string name="menu_map_set_visibility_status">Set Visibility</string>
+    <string name="menu_map_type">Map Type</string>
+    <string name="menu_map_type_normal">Normal</string>
+    <string name="menu_map_type_satellite">Satellite</string>
+    <string name="menu_map_type_terrain">Terrain</string>
+    <string name="menu_map_type_hybrid">Hybrid</string>
 
     <string name="switch_to_map_button">Switch to Map View</string>
 
@@ -77,7 +84,6 @@
     <string name="menu_sets_clear">Clear</string>
     <string name="menu_sets_clear_current">Current</string>
     <string name="menu_sets_clear_all">All</string>
-
 
     <string name="record_button">RECORD</string>
 

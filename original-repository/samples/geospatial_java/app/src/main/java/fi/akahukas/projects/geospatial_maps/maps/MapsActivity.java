@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,6 +24,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.ar.core.examples.java.geospatial.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import fi.akahukas.projects.geospatial_maps.location_data.LocationDataSample;
 
@@ -33,6 +38,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final String EXTRA_TAG_LOCATION_DATA = "LOCATION_DATA";
 
+    private final int DEFAULT_GROUP_ID = 0;
+    private final int DEFAULT_ORDER = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +48,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.inflateMenu(R.menu.map_menu);
 
         if (!areExtrasValid()) {
             locationDataSampleSets = new ArrayList<>();
@@ -153,6 +162,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         return false;
+    }
+
+    /**
+     * Modifies the options menu inside the MapsActivity.
+     * Adds new SubMenu for setting the visibility of the sets of plotted
+     * LocationDataSamples.
+     *
+     * @param menu The options menu in which you place your items.
+     *
+     * @return True if the menu was modified successfully, i.e. the menu is shown.
+     *          False if the modification was unsuccessful, i.e. the menu is not shown.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SubMenu subMenu = menu.addSubMenu(
+                Menu.NONE,
+                R.id.menu_map_set_visibility_status,
+                Menu.NONE,
+                R.string.menu_map_set_visibility_status
+        );
+
+        for (int i = 0; i < locationDataSampleSets.size() ; i++) {
+
+            String title = String.format(Locale.ENGLISH, "Set %d", i + 1);
+
+            subMenu.add(
+                    DEFAULT_GROUP_ID, // All at the same menu level.
+                    i, // itemId
+                    DEFAULT_ORDER,
+                    title
+            ).setCheckable(true).setChecked(true);
+        }
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.map_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**

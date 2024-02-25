@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--            THIS FILE WAS CREATED BY SAKU HAKAMÄKI            -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        The submenu controlling the visibility of the
+        sets of LocationDataSamples is placed here.
+    -->
+
+    <item
+        android:orderInCategory="1"
+        android:id="@+id/mapType"
+        android:title="@string/menu_map_type">
+        <menu>
+            <item
+                android:orderInCategory="2"
+                android:id="@+id/type_normal"
+                android:title="@string/menu_map_type_normal" />
+
+            <item
+                android:orderInCategory="2"
+                android:id="@+id/type_satellite"
+                android:title="@string/menu_map_type_satellite" />
+
+            <item
+                android:orderInCategory="2"
+                android:id="@+id/type_terrain"
+                android:title="@string/menu_map_type_terrain" />
+
+            <item
+                android:orderInCategory="2"
+                android:id="@+id/type_hybrid"
+                android:title="@string/menu_map_type_hybrid" />
+        </menu>
+    </item>
+</menu>
