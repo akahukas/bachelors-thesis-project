@@ -6,7 +6,6 @@ package fi.akahukas.projects.geospatial_maps.maps;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 
@@ -15,13 +14,24 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.ar.core.examples.java.geospatial.R;
-import com.google.ar.core.examples.java.geospatial.databinding.ActivityMapsBinding;
+
+import java.util.ArrayList;
+
+import fi.akahukas.projects.geospatial_maps.location_data.LocationDataSample;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    private ArrayList<ArrayList<LocationDataSample>> locationDataSampleSets;
+    private ArrayList<ArrayList<Marker>> locationMarkerSets;
+    private ArrayList<ArrayList<Polyline>> locationPolylineSets;
+
+    private final String EXTRA_TAG_LOCATION_DATA = "LOCATION_DATA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +41,71 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (!areExtrasValid()) {
+            locationDataSampleSets = new ArrayList<>();
+            locationMarkerSets = new ArrayList<>();
+            locationPolylineSets = new ArrayList<>();
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    /**
+     * Checks whether the sent extras are valid or not.
+     * If valid, assigns extras to corresponding attributes.
+     *
+     * @return True if sent extras are valid. False if not.
+     */
+    private boolean areExtrasValid() {
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            Object extraObject = extras.get(EXTRA_TAG_LOCATION_DATA);
+
+            if (extraObject instanceof ArrayList<?>) {
+                ArrayList<?> outerList = (ArrayList<?>) extraObject;
+                locationDataSampleSets = new ArrayList<>();
+
+                if (!outerList.isEmpty()) {
+                    for (int i = 0; i < outerList.size(); i++) {
+                        if (!(outerList.get(i) instanceof ArrayList<?>)) {
+                            return false;
+                        } else {
+                            ArrayList<?> innerList = (ArrayList<?>) outerList.get(i);
+
+                            if (!innerList.isEmpty()) {
+                                locationDataSampleSets.add(new ArrayList<>());
+
+                                for (int j = 0; j < innerList.size(); j++) {
+                                    Object object = innerList.get(j);
+
+                                    if ((object instanceof LocationDataSample)) {
+                                        LocationDataSample sample = (LocationDataSample) object;
+
+                                        locationDataSampleSets.get(i).add(sample);
+
+                                        if ((i == outerList.size() - 1) &&
+                                                (j == outerList.size() - 1)) {
+
+                                            locationMarkerSets = new ArrayList<>();
+                                            locationPolylineSets = new ArrayList<>();
+
+                                            return true;
+                                        }
+                                    } else {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

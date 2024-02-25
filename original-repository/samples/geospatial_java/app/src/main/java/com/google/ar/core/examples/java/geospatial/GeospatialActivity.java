@@ -106,6 +106,7 @@ import fi.akahukas.projects.geospatial_maps.common.ObservableEnum;
 import fi.akahukas.projects.geospatial_maps.common.ObservableInt;
 import fi.akahukas.projects.geospatial_maps.location_data.CollectingMode;
 import fi.akahukas.projects.geospatial_maps.location_data.LocationDataCollector;
+import fi.akahukas.projects.geospatial_maps.location_data.LocationDataSample;
 import fi.akahukas.projects.geospatial_maps.maps.MapsActivity;
 
 /**
@@ -278,6 +279,8 @@ public class GeospatialActivity extends AppCompatActivity
 
   private final int SINGLE_SAMPLE_COUNTDOWN_DURATION = 2000; // milliseconds
   private final int SINGLE_SAMPLE_COUNTDOWN_INTERVAL = 1000; // milliseconds
+
+  private final String EXTRA_TAG_LOCATION_DATA = "LOCATION_DATA";
 
   // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
 
@@ -1488,7 +1491,14 @@ public class GeospatialActivity extends AppCompatActivity
    * Switches to the Google Maps activity.
    */
   private void switchToMapView() {
+
+    locationDataCollector.stopCollecting();
+
     Intent intent = new Intent(this, MapsActivity.class);
+
+    ArrayList<ArrayList<LocationDataSample>> sampleSets = locationDataCollector.getDataSampleSets();
+
+    intent.putExtra(EXTRA_TAG_LOCATION_DATA, sampleSets);
 
     startActivity(intent);
   }
