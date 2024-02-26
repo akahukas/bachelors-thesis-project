@@ -1588,6 +1588,9 @@ public class GeospatialActivity extends AppCompatActivity
     } else if (itemId == R.id.clear_set_all) {
       locationDataCollector.clearAllDataSampleSets();
       return true;
+    } else if (itemId == R.id.export_location_data) {
+
+      return true;
     }
     return false;
   }

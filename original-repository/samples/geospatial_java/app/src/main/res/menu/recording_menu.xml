@@ -46,4 +46,9 @@
             </item>
         </menu>
     </item>
+
+    <item
+        android:id="@+id/export_location_data"
+        android:title="@string/menu_export_location_data"
+        android:titleCondensed="@string/menu_export_location_data_condensed" />
 </menu>

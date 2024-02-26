@@ -84,6 +84,8 @@
     <string name="menu_sets_clear">Clear</string>
     <string name="menu_sets_clear_current">Current</string>
     <string name="menu_sets_clear_all">All</string>
+    <string name="menu_export_location_data">Export Location Data</string>
+    <string name="menu_export_location_data_condensed">Export</string>
 
     <string name="record_button">RECORD</string>
 
