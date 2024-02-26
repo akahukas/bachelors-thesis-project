@@ -265,7 +265,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.mapType) {
+        if (menuItem.getItemId() == R.id.map_type) {  // Ignore parent item.
             return true;
         } else if (menuItem.getItemId() == R.id.type_normal) {
 
@@ -287,7 +287,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap_.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
             return true;
-        } else if (menuItem.getItemId() == R.id.menu_map_set_visibility_status) {
+        } else if (menuItem.getItemId() == R.id.menu_map_set_visibility_status) {  // Ignore parent item.
             return true;
         }
 
@@ -376,7 +376,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         sample.getVerticalAccuracy(),
                         sample.getOrientationYawAccuracy()
                 );
-                
+
                 if (i >= MARKER_COLORS.size()) {
                     markerColorIndex = 0;
                 }

@@ -4,43 +4,43 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/recordingMode"
+        android:id="@+id/recording_mode"
         android:title="@string/menu_mode"
         android:titleCondensed="@string/menu_mode_condensed">
         <menu>
             <item
-                android:id="@+id/recordingModeSingle"
+                android:id="@+id/recording_mode_single"
                 android:title="@string/menu_mode_single"/>
 
             <item
-                android:id="@+id/recordingModeContinuous"
+                android:id="@+id/recording_mode_continuous"
                 android:title="@string/menu_mode_continuous"/>
         </menu>
     </item>
 
     <item
-        android:id="@+id/manageSets"
+        android:id="@+id/manage_sets"
         android:title="@string/menu_sets_manage"
         android:titleCondensed="@string/menu_sets_manage_condensed">
         <menu>
             <item
-                android:id="@+id/saveCurrentSet"
+                android:id="@+id/save_current_set"
                 android:title="@string/menu_sets_save_current"/>
 
             <item
-                android:id="@+id/createNewSet"
+                android:id="@+id/create_new_set"
                 android:title="@string/menu_sets_create_new"/>
 
             <item
-                android:id="@+id/clearSet"
+                android:id="@+id/clear_set"
                 android:title="@string/menu_sets_clear">
                 <menu>
                     <item
-                        android:id="@+id/clearCurrentSet"
+                        android:id="@+id/clear_set_current"
                         android:title="@string/menu_sets_clear_current"/>
 
                     <item
-                        android:id="@+id/clearAllSets"
+                        android:id="@+id/clear_set_all"
                         android:title="@string/menu_sets_clear_all"/>
                 </menu>
             </item>

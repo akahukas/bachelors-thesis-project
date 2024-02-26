@@ -11,7 +11,7 @@
 
     <item
         android:orderInCategory="1"
-        android:id="@+id/mapType"
+        android:id="@+id/map_type"
         android:title="@string/menu_map_type">
         <menu>
             <item

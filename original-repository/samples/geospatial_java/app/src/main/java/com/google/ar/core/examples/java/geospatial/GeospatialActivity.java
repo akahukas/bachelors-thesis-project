@@ -1552,7 +1552,9 @@ public class GeospatialActivity extends AppCompatActivity
    */
   protected boolean recordingMenuClick(MenuItem item) {
     int itemId = item.getItemId();
-    if (itemId == R.id.recordingModeSingle) {
+    if (itemId == R.id.recording_mode) { // Ignore parent item.
+      return true;
+    } else if (itemId == R.id.recording_mode_single) {
 
       if (locationDataCollector.isCollecting()) {
         setRecordingStatusTextViewStyle(R.string.recording_off, R.color.recording_text_white);
@@ -1562,8 +1564,7 @@ public class GeospatialActivity extends AppCompatActivity
               CollectingMode.SINGLE
       );
       return true;
-    }
-    else if (itemId == R.id.recordingModeContinuous) {
+    } else if (itemId == R.id.recording_mode_continuous) {
 
       if (locationDataCollector.isCollecting()) {
         setRecordingStatusTextViewStyle(R.string.recording_off, R.color.recording_text_white);
@@ -1573,20 +1574,18 @@ public class GeospatialActivity extends AppCompatActivity
               CollectingMode.CONTINUOUS
       );
       return true;
-    }
-    else if (itemId == R.id.saveCurrentSet) {
+    } else if (itemId == R.id.save_current_set) {
       locationDataCollector.saveCurrentSet();
       return true;
-    }
-    else if (itemId == R.id.createNewSet) {
+    } else if (itemId == R.id.create_new_set) {
       locationDataCollector.addNewDataSampleSet();
       return true;
-    }
-    else if (itemId == R.id.clearCurrentSet) {
+    } else if (itemId == R.id.clear_set) { // Ignore parent item.
+      return true;
+    } else if (itemId == R.id.clear_set_current) {
       locationDataCollector.clearCurrentDataSampleSet();
       return true;
-    }
-    else if (itemId == R.id.clearAllSets) {
+    } else if (itemId == R.id.clear_set_all) {
       locationDataCollector.clearAllDataSampleSets();
       return true;
     }
