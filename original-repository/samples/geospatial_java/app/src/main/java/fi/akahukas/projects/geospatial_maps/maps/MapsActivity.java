@@ -4,6 +4,7 @@
 
 package fi.akahukas.projects.geospatial_maps.maps;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -17,30 +18,70 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 import com.google.ar.core.examples.java.geospatial.R;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import fi.akahukas.projects.geospatial_maps.location_data.LocationDataSample;
 
+/**
+ * Activity adding an implementation of Google Maps with a
+ * possibility to plot and inspect collected location data.
+ */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    private GoogleMap mMap_;
 
-    private ArrayList<ArrayList<LocationDataSample>> locationDataSampleSets;
-    private ArrayList<ArrayList<Marker>> locationMarkerSets;
-    private ArrayList<ArrayList<Polyline>> locationPolylineSets;
+    private ArrayList<ArrayList<LocationDataSample>> locationDataSampleSets_;
+    private ArrayList<ArrayList<Marker>> locationMarkerSets_;
+    private ArrayList<ArrayList<Polyline>> locationPolylineSets_;
 
     private final String EXTRA_TAG_LOCATION_DATA = "LOCATION_DATA";
 
     private final int DEFAULT_GROUP_ID = 0;
     private final int DEFAULT_ORDER = 0;
+    private final int DEFAULT_ZOOM_LEVEL = 10;
 
+    private final List<Float> MARKER_COLORS = Arrays.asList(
+            BitmapDescriptorFactory.HUE_AZURE,
+            BitmapDescriptorFactory.HUE_BLUE,
+            BitmapDescriptorFactory.HUE_CYAN,
+            BitmapDescriptorFactory.HUE_GREEN,
+            BitmapDescriptorFactory.HUE_MAGENTA,
+            BitmapDescriptorFactory.HUE_ORANGE,
+            BitmapDescriptorFactory.HUE_RED,
+            BitmapDescriptorFactory.HUE_ROSE,
+            BitmapDescriptorFactory.HUE_VIOLET,
+            BitmapDescriptorFactory.HUE_YELLOW
+    );
+
+    private final LatLng DEFAULT_LOCATION_TAMPERE_FINLAND = new LatLng(
+            61.4979482599281, 23.76363183871995
+    );
+
+    private final LatLng NO_LOCATION = new LatLng(-1, -1);
+
+
+    /**
+     * Called when this activity is launched or when the user navigates to the
+     * activity. Initializes the content inside this activity.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.
+     *     <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +92,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         toolbar.inflateMenu(R.menu.map_menu);
 
         if (!areExtrasValid()) {
-            locationDataSampleSets = new ArrayList<>();
-            locationMarkerSets = new ArrayList<>();
-            locationPolylineSets = new ArrayList<>();
+            locationDataSampleSets_ = new ArrayList<>();
+            locationMarkerSets_ = new ArrayList<>();
+            locationPolylineSets_ = new ArrayList<>();
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -102,16 +143,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * location data.
      */
     private void clearSets() {
-        if (locationDataSampleSets != null) {
-            locationDataSampleSets.clear();
-            locationMarkerSets.clear();
-            locationPolylineSets.clear();
+        if (locationDataSampleSets_ != null) {
+            locationDataSampleSets_.clear();
+            locationMarkerSets_.clear();
+            locationPolylineSets_.clear();
         }
     }
 
     /**
      * Checks whether the sent extras are valid or not.
-     * If valid, assigns extras to corresponding attributes.
      *
      * @return True if sent extras are valid. False if not.
      */
@@ -121,39 +161,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (extras != null) {
             Object extraObject = extras.get(EXTRA_TAG_LOCATION_DATA);
 
-            if (extraObject instanceof ArrayList<?>) {
-                ArrayList<?> outerList = (ArrayList<?>) extraObject;
-                locationDataSampleSets = new ArrayList<>();
+            return isLocationDataValid(extraObject);
+        }
+        return false;
+    }
 
-                if (!outerList.isEmpty()) {
-                    for (int i = 0; i < outerList.size(); i++) {
-                        if (!(outerList.get(i) instanceof ArrayList<?>)) {
-                            return false;
-                        } else {
-                            ArrayList<?> innerList = (ArrayList<?>) outerList.get(i);
+    /**
+     * Checks whether the LocationDataSamples sent in extras
+     * are valid or not. If valid, assigns extras to
+     * corresponding attributes.
+     *
+     * @param extraObject The object possibly containing the
+     *                    location data.
+     * @return True if sent location data is valid. False if not.
+     */
+    private boolean isLocationDataValid(Object extraObject) {
+        if (extraObject instanceof ArrayList<?>) {
+            ArrayList<?> outerList = (ArrayList<?>) extraObject;
+            locationDataSampleSets_ = new ArrayList<>();
 
-                            if (!innerList.isEmpty()) {
-                                locationDataSampleSets.add(new ArrayList<>());
+            if (!outerList.isEmpty()) {
+                for (int i = 0; i < outerList.size(); i++) {
+                    if (!(outerList.get(i) instanceof ArrayList<?>)) {
+                        return false;
+                    } else {
+                        ArrayList<?> innerList = (ArrayList<?>) outerList.get(i);
 
-                                for (int j = 0; j < innerList.size(); j++) {
-                                    Object object = innerList.get(j);
+                        if (!innerList.isEmpty()) {
+                            locationDataSampleSets_.add(new ArrayList<>());
 
-                                    if ((object instanceof LocationDataSample)) {
-                                        LocationDataSample sample = (LocationDataSample) object;
+                            for (int j = 0; j < innerList.size(); j++) {
+                                Object object = innerList.get(j);
 
-                                        locationDataSampleSets.get(i).add(sample);
+                                if ((object instanceof LocationDataSample)) {
+                                    LocationDataSample sample = (LocationDataSample) object;
 
-                                        if ((i == outerList.size() - 1) &&
-                                                (j == outerList.size() - 1)) {
+                                    locationDataSampleSets_.get(i).add(sample);
 
-                                            locationMarkerSets = new ArrayList<>();
-                                            locationPolylineSets = new ArrayList<>();
+                                    if ((i == outerList.size() - 1) &&
+                                            (j == innerList.size() - 1)) {
 
-                                            return true;
-                                        }
-                                    } else {
-                                        return false;
+                                        locationMarkerSets_ = new ArrayList<>();
+                                        locationPolylineSets_ = new ArrayList<>();
+
+                                        return true;
                                     }
+                                } else {
+                                    return false;
                                 }
                             }
                         }
@@ -183,7 +237,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 R.string.menu_map_set_visibility_status
         );
 
-        for (int i = 0; i < locationDataSampleSets.size() ; i++) {
+        for (int i = 0; i < locationDataSampleSets_.size() ; i++) {
 
             String title = String.format(Locale.ENGLISH, "Set %d", i + 1);
 
@@ -202,21 +256,221 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * Handles the event emitted from the options menu.
+     *
+     * @param menuItem The menu item that was selected.
+     *
+     * @return True if the event was consumed successfully.
+     *          False if not.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.mapType) {
+            return true;
+        } else if (menuItem.getItemId() == R.id.type_normal) {
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            mMap_.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+            return true;
+        } else if (menuItem.getItemId() == R.id.type_satellite) {
+
+            mMap_.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+            return true;
+        } else if (menuItem.getItemId() == R.id.type_terrain) {
+
+            mMap_.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+            return true;
+        } else if (menuItem.getItemId() == R.id.type_hybrid) {
+
+            mMap_.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+            return true;
+        } else if (menuItem.getItemId() == R.id.menu_map_set_visibility_status) {
+            return true;
+        }
+
+        int itemId = menuItem.getItemId();
+
+        boolean newVisibilityState = !menuItem.isChecked();
+
+        setMarkerCollectionVisibility(itemId, newVisibilityState);
+
+        menuItem.setChecked(newVisibilityState);
+
+        return true;
+    }
+
+    /**
+     * Called when the Google Map element is ready to be used.
+     * Customizes and modifies the content displayed on the map
+     * and the map itself.
+     *
+     * @param googleMap The GoogleMap object that is displayed
+     *                  in the activity.
+     */
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap_ = googleMap;
+
+        mMap_.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap_.getUiSettings().setMapToolbarEnabled(false);
+
+        mMap_.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+        if (!locationDataSampleSets_.isEmpty()) {
+            plotLocationData();
+
+            moveCameraToFirstMarker(15);
+        } else {
+            moveCamera(DEFAULT_LOCATION_TAMPERE_FINLAND, DEFAULT_ZOOM_LEVEL);
+        }
+    }
+
+    /**
+     * Plots the collected location data on the map.
+     * Displays each location data sample with a Marker
+     * and connects all the Markers in the same set with
+     * Polyline objects. The location data related to a
+     * specific sample is displayed in an InfoWindow on
+     * top of the corresponding Marker.
+     */
+    private void plotLocationData() {
+        mMap_.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+
+        int markerColorIndex = 0;
+
+        for (int i = 0; i < locationDataSampleSets_.size(); i++) {
+            ArrayList<LocationDataSample> set = locationDataSampleSets_.get(i);
+
+            ArrayList<Marker> markerSet = new ArrayList<>();
+
+            ArrayList<Polyline> lineSet = new ArrayList<>();
+
+            LatLng prevLocation = NO_LOCATION; // Initial value for each set.
+
+            for (int j = 0; j < set.size(); j++) {
+                LocationDataSample sample = set.get(j);
+
+                LatLng location = new LatLng(sample.getLatitude(), sample.getLongitude());
+
+                LocalTime timestamp = sample.getTimestamp();
+
+                String snippet = String.format(Locale.ENGLISH,
+                        "Time: %02d:%02d:%02d.%d\n" + // Hours:Minutes:Seconds.Milliseconds
+                                "Latitude: %f˚\n" +
+                                "Longitude: %f˚\n" +
+                                "Horizontal Accuracy: %fm\n" +
+                                "Altitude: %fm\n" +
+                                "Vertical Accuracy: %fm\n" +
+                                "Yaw Accuracy: %f˚",
+                        timestamp.getHour(),
+                        timestamp.getMinute(),
+                        timestamp.getSecond(),
+                        (timestamp.getNano() / 1000000), // Convert to milliseconds.
+                        sample.getLatitude(),
+                        sample.getLongitude(),
+                        sample.getHorizontalAccuracy(),
+                        sample.getAltitude(),
+                        sample.getVerticalAccuracy(),
+                        sample.getOrientationYawAccuracy()
+                );
+                
+                if (i >= MARKER_COLORS.size()) {
+                    markerColorIndex = 0;
+                }
+
+                Marker marker = mMap_.addMarker(new MarkerOptions()
+                        .position(location)
+                        .title(String.format(
+                                Locale.ENGLISH,
+                                "Set #%d | Sample #%d",
+                                i+1,
+                                j+1
+                        ))
+                        .icon(BitmapDescriptorFactory.defaultMarker(
+                                MARKER_COLORS.get(markerColorIndex)
+                        ))
+                        .snippet(snippet)
+                );
+
+                markerSet.add(marker);
+
+                if (!(prevLocation == NO_LOCATION)) {
+                    Polyline polyline = mMap_.addPolyline(new PolylineOptions()
+                            .clickable(false)
+                            .add(
+                                    prevLocation,
+                                    location
+                            )
+                    );
+
+                    polyline.setStartCap(new RoundCap());
+                    polyline.setEndCap(new RoundCap());
+
+                    lineSet.add(polyline);
+                }
+
+                prevLocation = location;
+            }
+
+            locationMarkerSets_.add(markerSet);
+
+            locationPolylineSets_.add(lineSet);
+
+            markerColorIndex++;
+        }
+    }
+
+    /**
+     * Sets the Markers and Polyline objects related to a specific
+     * set of LocationDataSamples either to visible or invisible.
+     *
+     * @param setId The id of the set whose visibility is altered.
+     * @param visible True if the set is set to visible. False if
+     *                set to invisible.
+     */
+    private void setMarkerCollectionVisibility(int setId, boolean visible) {
+        ArrayList<Marker> markerSet = locationMarkerSets_.get(setId);
+
+        for (Marker marker : markerSet) {
+            marker.setVisible(visible);
+        }
+
+        ArrayList<Polyline> lineSet = locationPolylineSets_.get(setId);
+
+        for (Polyline line : lineSet) {
+            line.setVisible(visible);
+        }
+    }
+
+    /**
+     * Moves the camera of the GoogleMap object to specific
+     * coordinates and to a specific zoom level.
+     *
+     * @param coordinates The new coordinates where the camera is moved.
+     * @param zoomLevel The new zoom level where the camera zoom is set.
+     */
+    private void moveCamera(LatLng coordinates, int zoomLevel) {
+        mMap_.moveCamera(CameraUpdateFactory.newLatLng(coordinates));
+        mMap_.moveCamera(CameraUpdateFactory.zoomTo(zoomLevel));
+    }
+
+    /**
+     * Moves the camera of the GoogleMap object to the Marker
+     * corresponding to the first location data sample of the
+     * first collected set of samples.
+     *
+     * @param zoomLevel The new zoom level where the camera zoom is set.
+     */
+    private void moveCameraToFirstMarker(int zoomLevel) {
+        if (!locationDataSampleSets_.isEmpty()) {
+            LocationDataSample first = locationDataSampleSets_.get(0).get(0);
+
+            LatLng firstLocation = new LatLng(first.getLatitude(), first.getLongitude());
+
+            moveCamera(firstLocation, zoomLevel);
+        }
     }
 }
