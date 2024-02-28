@@ -81,5 +81,6 @@ dependencies {
 // -------------------- ADDED BY SAKU HAKAMÄKI | START --------------------
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.opencsv:opencsv:5.9'
 // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
 }

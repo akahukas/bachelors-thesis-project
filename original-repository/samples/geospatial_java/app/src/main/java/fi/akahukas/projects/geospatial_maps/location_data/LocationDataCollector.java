@@ -230,5 +230,4 @@ public class LocationDataCollector {
     public ObservableEnum<CollectingMode> getCurrentCollectingMode() {
         return this.currentCollectingMode_;
     }
-
 }

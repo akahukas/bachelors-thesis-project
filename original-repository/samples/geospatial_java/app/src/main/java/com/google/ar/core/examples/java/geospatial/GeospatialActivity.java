@@ -16,6 +16,7 @@
 
 package com.google.ar.core.examples.java.geospatial;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -104,6 +105,7 @@ import java.util.concurrent.TimeUnit;
 
 import fi.akahukas.projects.geospatial_maps.common.ObservableEnum;
 import fi.akahukas.projects.geospatial_maps.common.ObservableInt;
+import fi.akahukas.projects.geospatial_maps.location_data.CSVFileExporter;
 import fi.akahukas.projects.geospatial_maps.location_data.CollectingMode;
 import fi.akahukas.projects.geospatial_maps.location_data.LocationDataCollector;
 import fi.akahukas.projects.geospatial_maps.location_data.LocationDataSample;
@@ -277,6 +279,9 @@ public class GeospatialActivity extends AppCompatActivity
 
   private LocationDataCollector locationDataCollector;
 
+  private CSVFileExporter csvFileExporter;
+  private int csvFileExporterRequestCode;
+
   private final int SINGLE_SAMPLE_COUNTDOWN_DURATION = 2000; // milliseconds
   private final int SINGLE_SAMPLE_COUNTDOWN_INTERVAL = 1000; // milliseconds
 
@@ -358,6 +363,7 @@ public class GeospatialActivity extends AppCompatActivity
     });
 
     locationDataCollector = new LocationDataCollector();
+    csvFileExporter = new CSVFileExporter(this);
 
     recordButton = findViewById(R.id.record_button);
     recordingStatusTextView = findViewById(R.id.recording_status_text_view);
@@ -1590,9 +1596,71 @@ public class GeospatialActivity extends AppCompatActivity
       return true;
     } else if (itemId == R.id.export_location_data) {
 
+      if (!locationDataCollector.getDataSampleSets().isEmpty()) {
+        this.csvFileExporterRequestCode = csvFileExporter.createFile();
+      } else {
+        Toast.makeText(
+                GeospatialActivity.this,
+                "Please save the collected sets before trying to export the data!",
+                Toast.LENGTH_LONG
+        ).show();
+      }
+
       return true;
     }
     return false;
+  }
+
+  /**
+   * Called when a launched Activity (e.g. system file picker) exits.
+   *
+   * @param requestCode The code the Activity was started with.
+   * @param resultCode The code the Activity returned.
+   * @param data The possible additional data that the Activity returned.
+   */
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (this.csvFileExporterRequestCode == requestCode) {
+      if (resultCode == Activity.RESULT_OK) {
+
+        if (data.getData() != null) {
+
+          // The file was successfully created, now try to write
+          // the collected data to it.
+          boolean isSuccess = csvFileExporter.writeToFile(
+                  data.getData(),
+                  locationDataCollector.getDataSampleSets());
+
+          if (isSuccess) {
+            Toast.makeText(
+                    GeospatialActivity.this,
+                    "File saved successfully.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+          }
+        }
+
+        Toast.makeText(
+                GeospatialActivity.this,
+                "An error occurred, please try again.",
+                Toast.LENGTH_LONG
+        ).show();
+
+      } else if (resultCode == Activity.RESULT_CANCELED) {
+
+        Toast.makeText(
+                GeospatialActivity.this,
+                "ERROR: The operation was canceled. Please try again.",
+                Toast.LENGTH_LONG
+        ).show();
+
+        return;
+      }
+    }
   }
 
   // -------------------- ADDED BY SAKU HAKAMÄKI |  END  --------------------
