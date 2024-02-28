@@ -316,6 +316,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap_.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap_.getUiSettings().setMapToolbarEnabled(false);
+        mMap_.getUiSettings().setCompassEnabled(false);
 
         mMap_.moveCamera(CameraUpdateFactory.zoomTo(15));
 
