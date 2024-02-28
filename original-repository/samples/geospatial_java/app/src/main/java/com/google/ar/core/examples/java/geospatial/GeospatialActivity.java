@@ -461,17 +461,24 @@ public class GeospatialActivity extends AppCompatActivity
     if (sharedPreferences.getBoolean(ALLOW_GEOSPATIAL_ACCESS_KEY, /* defValue= */ false)) {
       createSession();
     } else {
-      showPrivacyNoticeDialog();
+      // -------------------- MODIFIED BY SAKU HAKAMÄKI | START --------------------
+
+      showPrivacyNoticeDialog(false);
+
+      // -------------------- MODIFIED BY SAKU HAKAMÄKI |  END  --------------------
     }
 
     surfaceView.onResume();
     displayRotationHelper.onResume();
   }
+  // -------------------- MODIFIED BY SAKU HAKAMÄKI | START --------------------
 
-  private void showPrivacyNoticeDialog() {
-    DialogFragment dialog = PrivacyNoticeDialogFragment.createDialog();
+  private void showPrivacyNoticeDialog(boolean isShowRequestFromUser) {
+    DialogFragment dialog = PrivacyNoticeDialogFragment.createDialog(isShowRequestFromUser);
     dialog.show(getSupportFragmentManager(), PrivacyNoticeDialogFragment.class.getName());
   }
+
+  // -------------------- MODIFIED BY SAKU HAKAMÄKI |  END  --------------------
 
   private void createSession() {
     Exception exception = null;
@@ -1607,6 +1614,8 @@ public class GeospatialActivity extends AppCompatActivity
       }
 
       return true;
+    } else if (itemId == R.id.show_privacy_notice) {
+      showPrivacyNoticeDialog(true);
     }
     return false;
   }

@@ -86,6 +86,7 @@
     <string name="menu_sets_clear_all">All</string>
     <string name="menu_export_location_data">Export Location Data</string>
     <string name="menu_export_location_data_condensed">Export</string>
+    <string name="menu_show_privacy_notice">Privacy Notice</string>
 
     <string name="record_button">RECORD</string>
 
@@ -93,6 +94,33 @@
     <string name="recording_off">NOT RECORDING</string>
 
     <string name="recording_info">RECORDING MODE: %s\n%d IN CURRENT SET\n%d SAVED SETS IN TOTAL</string>
+
+    <string name="privacy_notice_dialog_title">
+        User Privacy Notice
+    </string>
+
+    <string name="privacy_notice_play_services_for_ar_title">
+        Google Play Services for AR (ARCore)
+    </string>
+    <string name="privacy_notice_play_services_for_ar">
+        This application runs on
+        <a href='https://play.google.com/store/apps/details?id=com.google.ar.core'>
+            Google Play Services for AR
+        </a>
+         (ARCore), which is provided by Google and governed by the
+        <a href='https://policies.google.com/privacy'>Google Privacy Policy</a>
+        .
+    </string>
+
+    <string name="privacy_notice_anchors_geospatial_title">
+        ARCore Cloud Anchors and\nARCore Geospatial API
+    </string>
+    <string name="privacy_notice_anchors_geospatial">
+        To power this session, Google will process sensor data (e.g., camera and location).
+        <a href='https://support.google.com/ar?p=how-google-play-services-for-ar-handles-your-data'>
+            Learn more
+        </a>
+    </string>
 
     <!--                    ADDED BY SAKU HAKAMÄKI |  END                     -->
 </resources>
