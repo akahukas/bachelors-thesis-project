@@ -1,1 +1,3 @@
-# Bachelor's thesis (WIP)
+# Bachelor's thesis project
+
+### (WIP)
