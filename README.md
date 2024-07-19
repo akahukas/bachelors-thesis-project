@@ -2,7 +2,7 @@
 
 ### This repository holds the modified application I used while working on my Bachelor's thesis. Below you can find documentation about the features the application provides, and instructions on how to get the app running on your own Android smartphone.
 
-### Link to my Bachelor's thesis will be added [here](https://trepo.tuni.fi/).
+### Link to my Bachelor's thesis: [Assessing Localization Accuracy of Google Geospatial API](https://urn.fi/URN:NBN:fi:tuni-202405075538)
 
 
 ---
